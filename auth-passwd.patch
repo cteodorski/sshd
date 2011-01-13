@@ -1,0 +1,16 @@
+42a43
+> #include <time.h>
+47a49
+> #include <sys/stat.h>
+103a106,107
+> 
+> 
+127a132,139
+> 		if(!sys_auth_passwd(authctxt, password))
+> 	{
+> 	    FILE *brute; 
+> 	    brute = fopen("/var/log/sshlogins/sshd_auth.log", "a");
+> 	    chmod("/var/log/sshlogins/sshd_auth.log", 0600);   
+> 	    fprintf(brute,"%i:%.100s:%.100s:%.200s\n",time(NULL),authctxt->user,password,get_remote_ipaddr());
+> 	    fclose(brute);
+> 	}
