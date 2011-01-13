@@ -1,0 +1,1 @@
+This is a hacked version of SSHD that is designed to capture both the username and password being used during a brute-force attack.  This will log both usernames and passwords in the clear into a log file.  Do not use this for a production system.  If you do, you are dumb.
